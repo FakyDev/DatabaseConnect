@@ -121,13 +121,6 @@ function HasValidRequest() : bool{
     }
 
     //check if all data exists
-    if(isset($data->queryType) && isset($data->email) && isset($data->password)){
-        //checkif string
-        if(is_string($data->username) && is_string($data->email) && is_string($data->password)){
-            return true;
-        }
-    }
-
     if(isset($data->queryType)){
         if(is_numeric($data->queryType)){
             switch($data->queryType){
