@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Database;
 
 //Get files
-include_once $_SERVER['DOCUMENT_ROOT'] . '/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/autoload.php';
 
 use Database\DataBaseEntry;
 use Database\IDatabase;

@@ -23,7 +23,7 @@
 declare(strict_types=1);
 
 //Get files
-include_once $_SERVER['DOCUMENT_ROOT'] . '/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/autoload.php';
 
 use Database\DataBase;
 
