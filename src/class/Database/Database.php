@@ -1,4 +1,24 @@
 <?php
+
+/**
+ * Copyright 2021 FakyZDev
+
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * Github:
+ * @link https://github.com/FakyZDev/
+ * 
+*/
 declare(strict_types=1);
 
 namespace Database;
@@ -41,7 +61,9 @@ abstract class Database implements IDatabase{
     protected ?mysqli $connection = null;
 
     /**
+     * Try to open connection on construct.
      * 
+     * @param string $tableName The name of the table to query for.
      * 
      */
     public function __construct(string $tableName){
@@ -169,6 +191,40 @@ abstract class Database implements IDatabase{
         }
     }
 
+    /**
+     * Fetch and store the result in the appropriate way, then return.
+     * 
+     * @param mysqli_result $result After queried object.
+     * 
+     * @return array Associative array, if only one row was selected. Multi-demensional array if, more than one row was seleceted. Empty array if no result.
+     */
+    public function GetResult(\mysqli_result $result) : array{
+        //Get result in array
+        if($result->num_rows > 0){
+            if($result->num_rows == 1){
+                //Get result
+                $arr = $result->fetch_assoc();
+            } else {
+                //Declare array
+                $arr = [];
+
+                //Update the array
+                while($value = $result->fetch_assoc()){
+                    $arr[] = [$value];
+                }
+            }
+        }
+
+        //Free result
+        $result->free_result();
+        
+        //retrn result
+        if(!isset($arr)){
+            return [];
+        }
+        return $arr;
+    }
+
 
     /**
      * Return the DatabaseEntry instance.
@@ -190,8 +246,6 @@ abstract class Database implements IDatabase{
      * Escape string to avoid mysql injection.
      * 
      * @param string $word The word/sentence to fix.
-     * 
-     * No need to use this method on (binding) value for prepared statement.
      * 
      * @return string|false False, if failed to connect to database.
      */
