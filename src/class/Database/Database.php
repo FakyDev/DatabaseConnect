@@ -210,7 +210,7 @@ abstract class Database implements IDatabase{
 
                 //Update the array
                 while($value = $result->fetch_assoc()){
-                    $arr[] = [$value];
+                    $arr[] = $value;
                 }
             }
         }
