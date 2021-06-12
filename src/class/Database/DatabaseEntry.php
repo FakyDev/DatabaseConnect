@@ -35,7 +35,7 @@ use File\IniFile;
  * 
  * @author FakyZDev
  */
-class DataBaseEntry{
+class DatabaseEntry{
 
     /**
      * Hold file instance.
