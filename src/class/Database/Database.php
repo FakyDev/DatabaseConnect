@@ -26,7 +26,7 @@ namespace Database;
 //Get files
 require_once $_SERVER['DOCUMENT_ROOT'] . '/autoload.php';
 
-use Database\DataBaseEntry;
+use Database\DatabaseEntry;
 use Database\IDatabase;
 
 use mysqli;
