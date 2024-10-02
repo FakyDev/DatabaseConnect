@@ -24,9 +24,6 @@ declare(strict_types=1);
 
 namespace Database;
 
-//Get files
-require_once $_SERVER['DOCUMENT_ROOT'] . '/autoload.php';
-
 use File\IniFile;
 
 /**
@@ -42,12 +39,19 @@ class DatabaseEntry{
      * 
      * @var IniFile
      */
-    private $file;
+    private IniFile $file;
+
+    /**
+     * The section that connect the 
+     */
+    private string $sectionName;
 
     /**
      * Constructor
      * 
      * @param string $path Path to file which contains information.
+     * @param string $fileName The name of the file that contains the information.
+     * @param string $sectionName The section name that contains the information.
      * 
      * Key should be: host, username, password, schema; and they should
      * in section "credential".
@@ -56,9 +60,10 @@ class DatabaseEntry{
      * 
      * @return void
      */
-    public function __construct(string $path, string $fileName){
+    public function __construct(string $path, string $fileName, string $sectionName){
         //create instance
         $this->file = new IniFile($path, $fileName, true);
+        $this->sectionName = $sectionName;
     }
 
     /**
@@ -67,11 +72,25 @@ class DatabaseEntry{
      * @return string Empty string if didn't found.
      */
     public function GetHost() : string{
+        //get content
         $content = $this->file->GetFile();
+
+        //get the host
+        $host = $content[$sectionName]["host"];
+
         //Check if not null
-        if(isset($content["credential"]["host"]) && is_string($content["credential"]["host"])){
-            return $content["credential"]["host"];
+        if(isset($host) && is_string($host)){
+            return $host;
         }
+
+        //get the fallback host
+        $host = $content["host"];
+
+        //Check if not null
+        if(isset($host) && is_string($host)){
+            return $host;
+        }
+
         //Empty string
         return "";
     }
@@ -82,11 +101,25 @@ class DatabaseEntry{
      * @return string Empty string if didn't found.
      */
     public function GetUsername() : string{
+        //get content
         $content = $this->file->GetFile();
+
+        //get the username
+        $username = $content[$sectionName]["username"];
+
         //Check if not null
-        if(isset($content["credential"]["username"]) && is_string($content["credential"]["username"])){
-            return $content["credential"]["username"];
+        if(isset($username) && is_string($username)){
+            return $username;
         }
+
+        //get the fallback username
+        $username = $content["username"];
+
+        //Check if not null
+        if(isset($username) && is_string($username)){
+            return $username;
+        }
+
         //Empty string
         return "";
     }
@@ -97,11 +130,25 @@ class DatabaseEntry{
      * @return string Empty string if didn't found.
      */
     public function GetPassword() : string{
+        //get content
         $content = $this->file->GetFile();
+
+        //get the username
+        $password = $content[$sectionName]["password"];
+
         //Check if not null
-        if(isset($content["credential"]["password"]) && is_string($content["credential"]["password"])){
-            return $content["credential"]["password"];
+        if(isset($password) && is_string($password)){
+            return $password;
         }
+
+        //get the fallback password
+        $password = $content["password"];
+
+        //Check if not null
+        if(isset($password) && is_string($password)){
+            return $password;
+        }
+
         //Empty string
         return "";
     }
@@ -114,10 +161,23 @@ class DatabaseEntry{
     public function GetSchema() : string{
         //Get content
         $content = $this->file->GetFile();
+
+        //get the username
+        $schema = $content[$sectionName]["schema"];
+
         //Check if not null
-        if(isset($content["credential"]["schema"]) && is_string($content["credential"]["schema"])){
-            return $content["credential"]["schema"];
+        if(isset($schema) && is_string($schema)){
+            return $schema;
         }
+
+        //get the fallback password
+        $schema = $content["schema"];
+
+        //Check if not null
+        if(isset($schema) && is_string($schema)){
+            return $schema;
+        }
+
         //Empty string
         return "";
     }

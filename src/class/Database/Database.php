@@ -23,9 +23,6 @@ declare(strict_types=1);
 
 namespace Database;
 
-//Get files
-require_once $_SERVER['DOCUMENT_ROOT'] . '/autoload.php';
-
 use Database\DatabaseEntry;
 use Database\IDatabase;
 
@@ -59,6 +56,7 @@ abstract class Database implements IDatabase{
      * @var mysqli|null
      */
     protected ?mysqli $connection = null;
+
 
     /**
      * Try to open connection on construct.
@@ -121,7 +119,7 @@ abstract class Database implements IDatabase{
 
         //Create connection
         //use '@' to not show error
-        $conn = @new  \mysqli($entryInstance->GetHost(), $entryInstance->GetUsername(), $entryInstance->GetPassword(), $entryInstance->GetSchema());
+        $conn = @new \mysqli($entryInstance->GetHost(), $entryInstance->GetUsername(), $entryInstance->GetPassword(), $entryInstance->GetSchema());
         
         //Connection error
         if($conn->connect_errno){
@@ -155,6 +153,26 @@ abstract class Database implements IDatabase{
         
         //Update reference
         $this->connection = null;
+    }
+
+    /**
+     * Return the DatabaseEntry instance.
+     * 
+     * @param string $path The path to the directory of the ini file that contain the credentials.
+     * @param string $name The name of the ini file.
+     * @param string $sectionName The section name in the ini file that contains the credential.
+     * 
+     * @return DatabaseEntry
+     */
+    protected function GetEntryInstance(string $path, string $name, string $sectionName) : DataBaseEntry{
+        //check if null
+        if(self::$entry == null){
+            //update instance
+            self::$entry = new DataBaseEntry($_SERVER['DOCUMENT_ROOT'] . '/config', 'settings');
+        }
+
+        //return instance
+        return self::$entry;
     }
 
 
@@ -192,13 +210,31 @@ abstract class Database implements IDatabase{
     }
 
     /**
+     * Escape string to avoid mysql injection.
+     * 
+     * @param string $word The word/sentence to fix.
+     * 
+     * @return string|false False, if failed to connect to database.
+     */
+    protected function EscapeString(string $word){
+        //Try to open connection
+        if(!$this->OpenConnection()){
+            return false;
+        }
+
+        //Escape character and return
+        return $this->connection->escape_string($word);
+    }
+
+
+    /**
      * Fetch and store the result in the appropriate way, then return.
      * 
      * @param mysqli_result $result After queried object.
      * 
      * @return array Associative array, if only one row was selected. Multi-demensional array if, more than one row was seleceted. Empty array if no result.
      */
-    public function GetResult(\mysqli_result $result) : array{
+    public static function GetResult(\mysqli_result $result) : array{
         //Get result in array
         if($result->num_rows > 0){
             if($result->num_rows == 1){
@@ -223,39 +259,5 @@ abstract class Database implements IDatabase{
             return [];
         }
         return $arr;
-    }
-
-
-    /**
-     * Return the DatabaseEntry instance.
-     * 
-     * @return DatabaseEntry
-     */
-    protected function GetEntryInstance() : DataBaseEntry{
-        //check if null
-        if(self::$entry == null){
-            //update instance
-            self::$entry = new DataBaseEntry($_SERVER['DOCUMENT_ROOT'] . '/config', 'settings');
-        }
-
-        //return instance
-        return self::$entry;
-    }
-
-    /**
-     * Escape string to avoid mysql injection.
-     * 
-     * @param string $word The word/sentence to fix.
-     * 
-     * @return string|false False, if failed to connect to database.
-     */
-    protected function EscapeString(string $word){
-        //Try to open connection
-        if(!$this->OpenConnection()){
-            return false;
-        }
-
-        //Escape character and return
-        return $this->connection->escape_string($word);
     }
 }
