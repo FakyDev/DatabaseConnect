@@ -25,7 +25,7 @@ declare(strict_types=1);
 namespace File;
 
 //Get files
-require_once $_SERVER['DOCUMENT_ROOT'] . '/autoload.php';
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/autoload.php';
 
 use File\IFile;
 
