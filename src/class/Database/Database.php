@@ -168,7 +168,7 @@ abstract class Database implements IDatabase{
         //check if null
         if(self::$entry == null){
             //update instance
-            self::$entry = new DataBaseEntry($_SERVER['DOCUMENT_ROOT'] . '/config', 'settings');
+            self::$entry = new DataBaseEntry($path, $name, $sectionName);
         }
 
         //return instance
